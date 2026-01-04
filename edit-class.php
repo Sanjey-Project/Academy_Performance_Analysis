@@ -21,7 +21,7 @@ $query->bindParam(':section',$section,PDO::PARAM_STR);
 $query->bindParam(':cid',$cid,PDO::PARAM_STR);
 $query->execute();
 $msg="Data has been updated successfully";
-header("location:manage-classes.php");
+header("location:manage-classes.php"); // Updated location to remove space
 }
 ?>
 <!DOCTYPE html>
@@ -30,78 +30,63 @@ header("location:manage-classes.php");
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Update Class</title>
-        <link rel="stylesheet" href="css/bootstrap.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" > <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
+        <title>Update Class | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
-
-            <!-- ========== TOP NAVBAR ========== -->
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
             <?php include('includes/topbar.php');?>   
-          <!-----End Top bar>
-            <! ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-            <div class="content-wrapper">
-                <div class="content-container">
+            
+            <div class="flex flex-1 pt-16">
+                
+                <?php include('includes/leftbar.php');?>
 
-<!-- ========== LEFT SIDEBAR ========== -->
-<?php include('includes/leftbar.php');?>                   
- <!-- /.left-sidebar -->
-
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-6">
-                                    <h2 class="title">Update Class</h2>
-                                </div>
-                                
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-4xl mx-auto">
+                        
+                         <!-- Breadcrumb & Title -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading text-white">Update Class</h1>
+                                <nav class="flex mt-2 text-sm text-gray-400">
+                                    <a href="dashboard.php" class="hover:text-primary transition-colors">Home</a>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Classes</span>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Update Class</span>
+                                </nav>
                             </div>
-                            <!-- /.row -->
-                            <div class="row breadcrumb-div">
-                                <div class="col-md-6">
-                                    <ul class="breadcrumb">
-            							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-            							<li><a href="#">Classes</a></li>
-            							<li class="active">Update Class</li>
-            						</ul>
-                                </div>
-                               
-                            </div>
-                            <!-- /.row -->
                         </div>
-                        <!-- /.container-fluid -->
 
-                        <section class="section">
-                            <div class="container-fluid">
+                         <!-- Alerts -->
+                        <?php if($msg){?>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-check mr-2"></i>
+                                <strong>Well done!</strong> <span class="ml-2"><?php echo htmlentities($msg); ?></span>
+                            </div>
+                        <?php } else if($error){?>
+                            <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                                <strong>Oh snap!</strong> <span class="ml-2"><?php echo htmlentities($error); ?></span>
+                            </div>
+                        <?php } ?>
 
-                             
-
-                              
-
-                                <div class="row">
-                                    <div class="col-md-8 col-md-offset-2">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <h5>Update Class info</h5>
-                                                </div>
-                                            </div>
-<?php if($msg){?>
-<div class="alert alert-success left-icon-alert" role="alert">
- <strong>Well done!</strong><?php echo htmlentities($msg); ?>
- </div><?php } 
-else if($error){?>
-    <div class="alert alert-danger left-icon-alert" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                        </div>
-                                        <?php } ?>
-
-                                                <form method="post">
+                        <!-- Edit Form -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-8 shadow-xl animate-slide-up">
+                            <h2 class="text-xl font-bold font-heading mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square text-primary"></i> Update Class Info
+                            </h2>
+                            
+                            <form method="post" class="space-y-6">
 <?php 
 $cid=intval($_GET['classid']);
 $sql = "SELECT * from classdata where id=:cid";
@@ -114,86 +99,42 @@ if($query->rowCount() > 0)
 {
 foreach($results as $result)
 {   ?>
-
-                                                    <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Department Name</label>
-                                                		<div class="">
-                                                			<input type="text" name="classname" value="<?php echo htmlentities($result->ClassName);?>" required="required" class="form-control" id="success">
-                                                            <span class="help-block">Eg- CSE,ECE,EEE etc</span>
-                                                		</div>
-                                                	</div>
-                                                       <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Year Name</label>
-                                                        <div class="">
-                                                            <input type="number" name="classnamenumeric" value="<?php echo htmlentities($result->ClassNameNumeric);?>" required="required" class="form-control" id="success">
-                                                            <span class="help-block">Eg- 1,2,3,4 etc</span>
-                                                        </div>
-                                                    </div>
-                                                     <div class="form-group has-success">
-                                                        <label for="success" class="control-label">Section</label>
-                                                        <div class="">
-                                                            <input type="text" name="section" value="<?php echo htmlentities($result->Section);?>" class="form-control" required="required" id="success">
-                                                            <span class="help-block">Eg- A,B,C etc</span>
-                                                        </div>
-                                                    </div>
-                                                    <?php }} ?>
-  <div class="form-group has-success">
-
-                                                        <div class="">
-                                                           <button type="submit" name="update" class="btn btn-success btn-labeled">Update<span class="btn-label btn-label-right"><i class="fa fa-check"></i></span></button>
-                                                    </div>
-
-
-                                                    
-                                                </form>
-
-                                              
-                                            </div>
-                                        </div>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label for="classname" class="block text-sm font-medium text-gray-400 mb-2">Department Name</label>
+                                        <input type="text" name="classname" value="<?php echo htmlentities($result->ClassName);?>" required="required" id="classname" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all">
+                                        <p class="text-xs text-gray-500 mt-1">Eg: CSE, ECE, EEE etc</p>
                                     </div>
-                                    <!-- /.col-md-8 col-md-offset-2 -->
+                                    
+                                     <div>
+                                        <label for="classnamenumeric" class="block text-sm font-medium text-gray-400 mb-2">Year Name</label>
+                                        <input type="number" name="classnamenumeric" value="<?php echo htmlentities($result->ClassNameNumeric);?>" required="required" id="classnamenumeric" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all">
+                                        <p class="text-xs text-gray-500 mt-1">Eg: 1, 2, 3, 4 etc</p>
+                                    </div>
+
+                                    <div>
+                                        <label for="section" class="block text-sm font-medium text-gray-400 mb-2">Section</label>
+                                        <input type="text" name="section" value="<?php echo htmlentities($result->Section);?>" required="required" id="section" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all">
+                                        <p class="text-xs text-gray-500 mt-1">Eg: A, B, C etc</p>
+                                    </div>
                                 </div>
-                                <!-- /.row -->
-
-                               
-                               
-
-                            </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
+<?php }} ?>
+                                <div class="pt-4 flex gap-4">
+                                    <button type="submit" name="update" class="w-full sm:w-auto bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-floppy-disk"></i> Update Class
+                                    </button>
+                                     <a href="manage-classes.php" class="w-full sm:w-auto bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2 text-center">
+                                        <i class="fa-solid fa-arrow-left"></i> Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
 
                     </div>
-                    <!-- /.main-page -->
-
-             
-                    <!-- /.right-sidebar -->
-
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
-
-        <!-- ========== COMMON JS FILES ========== -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/jquery-ui/jquery-ui.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
-
-
-
-        <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
+        
     </body>
 </html>
 <?php  } ?>

@@ -15,189 +15,204 @@ if(strlen($_SESSION['alogin'])=="")
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Admin Home</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/toastr/toastr.min.css" media="screen" >
-        <link rel="stylesheet" href="css/icheck/skins/line/blue.css" >
-        <link rel="stylesheet" href="css/icheck/skins/line/red.css" >
-        <link rel="stylesheet" href="css/icheck/skins/line/green.css" >
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
-        
-        </style>
+        <title>Admin Dashboard | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
+        <!-- Chart.js (Modern Replacement for AmCharts) -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
-              <?php include('includes/topbar.php');?>
-            <div class="content-wrapper">
-                <div class="content-container">
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
+            <!-- Topbar -->
+            <?php include('includes/topbar.php');?>
+            
+            <div class="flex flex-1 pt-16">
+                
+                <!-- Sidebar -->
+                <?php include('includes/leftbar.php');?>
 
-                    <?php include('includes/leftbar.php');?>
-
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-sm-6">
-                                    <h2 class="title">Dashboard</h2>
-
-                                </div>
-                                <!-- /.col-sm-6 -->
+                <!-- Main Content -->
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-7xl mx-auto">
+                        
+                        <!-- Page Title -->
+                        <div class="flex items-center justify-between mb-8 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading">Dashboard</h1>
+                                <p class="text-gray-400 mt-1">Overview of academic performance data</p>
                             </div>
-                            <!-- /.row -->
-
+                            <div class="hidden sm:block">
+                                <span class="bg-surface border border-white/10 px-4 py-2 rounded-lg text-sm text-gray-300">
+                                    <i class="fa-regular fa-calendar mr-2"></i> <?php echo date("F j, Y"); ?>
+                                </span>
+                            </div>
                         </div>
-                        <!-- /.container-fluid -->
 
-                        <section class="section">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-primary" href="manage-students.php">
-<?php
-$sql1 ="SELECT StudentId from studentdata ";
-$query1 = $dbh -> prepare($sql1);
-$query1->execute();
-$results1=$query1->fetchAll(PDO::FETCH_OBJ);
-$totalstudents=$query1->rowCount();
-?>
-
-                                            <span class="number counter"><?php echo htmlentities($totalstudents);?></span>
-                                            <span class="name">Regd Users</span>
-                                            <span class="bg-icon"><i class="fa fa-users"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-danger" href="manage-subjects.php">
-<?php
-$sql ="SELECT id from  subjectdata ";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$totalsubjects=$query->rowCount();
-?>
-                                            <span class="number counter"><?php echo htmlentities($totalsubjects);?></span>
-                                            <span class="name">Subjects Listed</span>
-                                            <span class="bg-icon"><i class="fa fa-ticket"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-warning" href="manage-classes.php">
-                                        <?php
-$sql2 ="SELECT id from  classdata ";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totalclasses=$query2->rowCount();
-?>
-                                            <span class="number counter"><?php echo htmlentities($totalclasses);?></span>
-                                            <span class="name">Total classes listed</span>
-                                            <span class="bg-icon"><i class="fa fa-bank"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-success" href="manage-results.php">
-                                        <?php
-$sql3="SELECT  distinct StudentId from  resultdata ";
-$query3 = $dbh -> prepare($sql3);
-$query3->execute();
-$results3=$query3->fetchAll(PDO::FETCH_OBJ);
-$totalresults=$query3->rowCount();
-?>
-
-                                            <span class="number counter"><?php echo htmlentities($totalresults);?></span>
-                                            <span class="name">Results Declared</span>
-                                            <span class="bg-icon"><i class="fa fa-file-text"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
+                        <!-- Stats Grid -->
+                        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-slide-up">
+                            
+                            <!-- Regd Users -->
+                            <a href="manage-students.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+                                <?php
+                                $sql1 ="SELECT StudentId from studentdata ";
+                                $query1 = $dbh -> prepare($sql1);
+                                $query1->execute();
+                                $totalstudents=$query1->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-users text-6xl text-primary"></i>
                                 </div>
-                                <!-- /.row -->
-                            </div>
-                            <!-- /.container-fluid -->
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalstudents);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Registered Users</p>
+                                    <div class="mt-4 flex items-center text-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
+                                        View Details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-indigo-600"></div>
+                            </a>
+
+                            <!-- Subjects Listed -->
+                            <a href="manage-subjects.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                                <?php
+                                $sql ="SELECT id from  subjectdata ";
+                                $query = $dbh -> prepare($sql);
+                                $query->execute();
+                                $totalsubjects=$query->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-book-open text-6xl text-red-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalsubjects);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Subjects Listed</p>
+                                    <div class="mt-4 flex items-center text-red-400 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                                        View Details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-600"></div>
+                            </a>
+
+                            <!-- Classes Listed -->
+                            <a href="manage-classes.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10">
+                                <?php
+                                $sql2 ="SELECT id from  classdata ";
+                                $query2 = $dbh -> prepare($sql2);
+                                $query2->execute();
+                                $totalclasses=$query2->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-chalkboard text-6xl text-yellow-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalclasses);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Total Classes</p>
+                                    <div class="mt-4 flex items-center text-yellow-400 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                                        View Details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-amber-600"></div>
+                            </a>
+
+                            <!-- Results Declared -->
+                            <a href="manage-results.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
+                                <?php
+                                $sql3="SELECT  distinct StudentId from  resultdata ";
+                                $query3 = $dbh -> prepare($sql3);
+                                $query3->execute();
+                                $totalresults=$query3->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-square-poll-vertical text-6xl text-emerald-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalresults);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Results Declared</p>
+                                    <div class="mt-4 flex items-center text-emerald-400 text-sm font-medium group-hover:translate-x-1 transition-transform">
+                                        View Details <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
+                            </a>
+
                         </section>
-                        <!-- /.section -->
+
+                        <!-- Chart Section (New Addition for "Next Level") -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.1s;">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-bold font-heading">Performance Overview</h3>
+                                <button class="text-sm text-primary hover:text-white transition-colors">Download Report</button>
+                            </div>
+                            <div class="relative h-64 w-full">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
 
                     </div>
-                    <!-- /.main-page -->
-
-
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
 
-        <!-- ========== COMMON JS FILES ========== -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/jquery-ui/jquery-ui.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-        <script src="js/waypoint/waypoints.min.js"></script>
-        <script src="js/counterUp/jquery.counterup.min.js"></script>
-        <script src="js/amcharts/amcharts.js"></script>
-        <script src="js/amcharts/serial.js"></script>
-        <script src="js/amcharts/plugins/export/export.min.js"></script>
-        <link rel="stylesheet" href="js/amcharts/plugins/export/export.css" type="text/css" media="all" />
-        <script src="js/amcharts/themes/light.js"></script>
-        <script src="js/toastr/toastr.min.js"></script>
-        <script src="js/icheck/icheck.min.js"></script>
-
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
-        <script src="js/production-chart.js"></script>
-        <script src="js/traffic-chart.js"></script>
-        <script src="js/task-list.js"></script>
         <script>
-            $(function(){
-
-                // Counter for dashboard stats
-                $('.counter').counterUp({
-                    delay: 10,
-                    time: 1000
-                });
-
-                // Welcome notification
-                toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": false,
-                  "progressBar": false,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": false,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
+            // Initialize Chart
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Results Published',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: 'rgba(79, 70, 229, 0.5)', // Primary color opacity
+                        borderColor: '#4f46e5',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    }
                 }
-                toastr["success"]( "Welcome to Academic Performance Analysis System!");
-
             });
+        
+            // Optional: Notification Toast Logic if needed (Simple version)
+             // document.addEventListener('DOMContentLoaded', () => {
+             //    // Notify welcome
+             // });
         </script>
     </body>
 </html>

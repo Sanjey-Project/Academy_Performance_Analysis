@@ -90,79 +90,68 @@ else if (isset($_POST['importExcel'])) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>SMS Admin Faculty Combination< </title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" >
-        <link rel="stylesheet" href="css/select2/select2.min.css" >
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
+        <title>Add Faculty Combination | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
+            <?php include('includes/topbar.php');?>   
+            
+            <div class="flex flex-1 pt-16">
+                
+                <?php include('includes/leftbar.php');?>
 
-            <!-- ========== TOP NAVBAR ========== -->
-  <?php include('includes/topbar.php');?> 
-            <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-            <div class="content-wrapper">
-                <div class="content-container">
-
-                    <!-- ========== LEFT SIDEBAR ========== -->
-                   <?php include('includes/leftbar.php');?>  
-                    <!-- /.left-sidebar -->
-
-                    <div class="main-page">
-
-                     <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-6">
-                                    <h2 class="title">Add Faculty Combination</h2>
-                                
-                                </div>
-                                
-                                <!-- /.col-md-6 text-right -->
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-4xl mx-auto">
+                        
+                         <!-- Breadcrumb & Title -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading text-white">Add Faculty Combination</h1>
+                                <nav class="flex mt-2 text-sm text-gray-400">
+                                    <a href="dashboard.php" class="hover:text-primary transition-colors">Home</a>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Faculty</span>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Add Combination</span>
+                                </nav>
                             </div>
-                            <!-- /.row -->
-                            <div class="row breadcrumb-div">
-                                <div class="col-md-6">
-                                    <ul class="breadcrumb">
-                                        <li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                        <li> Faculty</li>
-                                        <li class="active">Add Faculty Combination</li>
-                                    </ul>
-                                </div>
-                             
-                            </div>
-                            <!-- /.row -->
                         </div>
-                        <div class="container-fluid">
-                           
-                        <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <h5>Add Faculty Combination</h5>
-                                                </div>
-                                            </div>
-                                            <div class="panel-body">
-<?php if($msg){?>
-<div class="alert alert-success left-icon-alert" role="alert">
- <strong>Well done!</strong><?php echo htmlentities($msg); ?>
- </div><?php } 
-else if($error){?>
-    <div class="alert alert-danger left-icon-alert" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                        </div>
-                                        <?php } ?>
-                                                <form class="form-horizontal" method="post">
-                                                <div class="form-group">
-                                                        <label for="default" class="col-sm-2 control-label">Faculty name</label>
-                                                        <div class="col-sm-10">
- <select name="faculty" class="form-control" id="default" required="required">
-<option value="">Select Faculty</option>
+
+                         <!-- Alerts -->
+                        <?php if($msg){?>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-check mr-2"></i>
+                                <strong>Well done!</strong> <span class="ml-2"><?php echo htmlentities($msg); ?></span>
+                            </div>
+                        <?php } else if($error){?>
+                            <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                                <strong>Oh snap!</strong> <span class="ml-2"><?php echo htmlentities($error); ?></span>
+                            </div>
+                        <?php } ?>
+
+                        <!-- Create Combination Form -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-8 shadow-xl mb-8 animate-slide-up">
+                            <h2 class="text-xl font-bold font-heading mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-link text-primary"></i> Link Faculty to Class & Subject
+                            </h2>
+                            
+                            <form method="post" class="space-y-6">
+                                
+                                <div>
+                                    <label for="faculty" class="block text-sm font-medium text-gray-400 mb-2">Faculty</label>
+                                    <select name="faculty" id="faculty" required="required" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all appearance-none">
+                                        <option value="">Select Faculty</option>
 <?php $sql = "SELECT * from facultydata";
 $query = $dbh->prepare($sql);
 $query->execute();
@@ -173,14 +162,14 @@ foreach($results as $result)
 {   ?>
 <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->FacultyName); ?></option>
 <?php }} ?>
- </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="default" class="col-sm-2 control-label">Class</label>
-                                                        <div class="col-sm-10">
- <select name="class" class="form-control" id="default" required="required">
-<option value="">Select Class</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="col-span-1">
+                                         <label for="class" class="block text-sm font-medium text-gray-400 mb-2">Class</label>
+                                        <select name="class" id="class" required="required" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all appearance-none">
+                                            <option value="">Select Class</option>
 <?php $sql = "SELECT * from classdata";
 $query = $dbh->prepare($sql);
 $query->execute();
@@ -191,14 +180,12 @@ foreach($results as $result)
 {   ?>
 <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->ClassName); ?> &nbsp; <?php echo htmlentities($result->ClassNameNumeric); ?>&nbsp; Section-<?php echo htmlentities($result->Section); ?></option>
 <?php }} ?>
- </select>
-                                                        </div>
-                                                    </div>
-<div class="form-group">
-                                                        <label for="default" class="col-sm-2 control-label">Subject</label>
-                                                        <div class="col-sm-10">
- <select name="subject" class="form-control" id="default" required="required">
-<option value="">Select Subject</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-span-1">
+                                        <label for="subject" class="block text-sm font-medium text-gray-400 mb-2">Subject</label>
+                                         <select name="subject" id="subject" required="required" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all appearance-none">
+                                            <option value="">Select Subject</option>
 <?php $sql = "SELECT * from subjectdata";
 $query = $dbh->prepare($sql);
 $query->execute();
@@ -209,59 +196,47 @@ foreach($results as $result)
 {   ?>
 <option value="<?php echo htmlentities($result->id); ?>"><?php echo htmlentities($result->SubjectName); ?></option>
 <?php }} ?>
- </select>
-                                                        </div>
-                                                    </div>
-                                                    
-
-                                                    
-                                                    <div class="form-group">
-                                                        <div class="col-sm-offset-2 col-sm-10">
-                                                            <button type="submit" name="submit" class="btn btn-primary">Add</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                                <form method="post" enctype="multipart/form-data">
-    <!-- File upload field -->
-    <div class="form-group has-success">
-        <label for="excelFile" class="control-label">Multiple Uploads ? Click Below</label>
-        <input type="file" name="excelFile" id="excelFile" class="form-control" accept=".xls,.xlsx">
-        <span class="help-block">Upload an Excel file (.xls, .xlsx)</span>
-    </div>
-    <!-- Submit button for file upload -->
-    <button type="submit" name="importExcel" class="btn btn-primary btn-labeled">Import Excel<span class="btn-label btn-label-right"><i class="fa fa-upload"></i></span></button>
-</form>
-                                            </div>
-                                        </div>
+                                        </select>
                                     </div>
-                                    <!-- /.col-md-12 -->
                                 </div>
+                                
+
+                                <div class="pt-4">
+                                    <button type="submit" name="submit" class="w-full sm:w-auto bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-indigo-500/30 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-plus"></i> Add Combination
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                         <!-- Import Excel Form -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-8 shadow-xl animate-slide-up" style="animation-delay: 0.1s;">
+                            <h2 class="text-xl font-bold font-heading mb-6 flex items-center gap-2">
+                                <i class="fa-solid fa-file-excel text-green-500"></i> Import from Excel
+                            </h2>
+                            
+                            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                                <div>
+                                    <label for="excelFile" class="block text-sm font-medium text-gray-400 mb-2">Upload Excel File (.xls, .xlsx)</label>
+                                    <div class="relative group">
+                                         <input type="file" name="excelFile" id="excelFile" class="block w-full text-sm text-gray-400 file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30 cursor-pointer bg-dark/50 border border-gray-700 rounded-lg" accept=".xls,.xlsx">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-2">Column Format: FacultyName, ClassName, Year, Section, SubjectName</p>
+                                </div>
+
+                                <div class="pt-2">
+                                    <button type="submit" name="importExcel" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-500/90 hover:to-emerald-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-green-500/30 transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-upload"></i> Import Data
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
         </div>
-        <!-- /.main-wrapper -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-        <script src="js/prism/prism.js"></script>
-        <script src="js/select2/select2.min.js"></script>
-        <script src="js/main.js"></script>
-        <script>
-            $(function($) {
-                $(".js-states").select2();
-                $(".js-states-limit").select2({
-                    maximumSelectionLength: 2
-                });
-                $(".js-states-hide").select2({
-                    minimumResultsForSearch: Infinity
-                });
-            });
-        </script>
+        
     </body>
 </html>
-<?PHP } ?>
+<?php } ?>

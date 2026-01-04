@@ -18,7 +18,7 @@ $query = $dbh->prepare($sql);
 $query->bindParam(':acid',$acid,PDO::PARAM_STR);
 $query->bindParam(':status',$status,PDO::PARAM_STR);
 $query->execute();
-$msg="Faculty Activate successfully";
+$msg="Faculty Activated successfully";
 }
 
  // for Deactivate Subject
@@ -26,12 +26,12 @@ if(isset($_GET['did']))
 {
 $did=intval($_GET['did']);
 $status=0;
-$sql="update Facultycombinationdata set status=:status where id=:did ";
+$sql="update facultycombinationdata set status=:status where id=:did ";
 $query = $dbh->prepare($sql);
 $query->bindParam(':did',$did,PDO::PARAM_STR);
 $query->bindParam(':status',$status,PDO::PARAM_STR);
 $query->execute();
-$msg="Faculty Deactivate successfully";
+$msg="Faculty Deactivated successfully";
 }
 ?>
 <!DOCTYPE html>
@@ -40,106 +40,135 @@ $msg="Faculty Deactivate successfully";
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Manage Faculty Combination</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" > <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
-        <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css"/>
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
-          <style>
-        .errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
+        <title>Manage Faculty Combinations | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
+        <!-- DataTables CSS for Tailwind -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+        <style>
+             /* Custom Scrollbar for dark theme */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #0f172a; 
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #334155; 
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #475569; 
+            }
+
+            /* DataTables Customization for Dark Theme */
+            .dataTables_wrapper .dataTables_length, 
+            .dataTables_wrapper .dataTables_filter, 
+            .dataTables_wrapper .dataTables_info, 
+            .dataTables_wrapper .dataTables_processing, 
+            .dataTables_wrapper .dataTables_paginate {
+                color: #9ca3af !important; /* text-gray-400 */
+                margin-bottom: 1rem;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                background-color: #1e293b; 
+                border: 1px solid #374151; 
+                color: #e5e7eb; 
+                border-radius: 0.375rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .dataTables_wrapper .dataTables_length select {
+                background-color: #1e293b;
+                border: 1px solid #374151;
+                color: #e5e7eb;
+                border-radius: 0.375rem;
+                padding: 0.25rem 2rem 0.25rem 0.5rem;
+            }
+            table.dataTable tbody tr {
+                background-color: transparent !important;
+            }
+            table.dataTable tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.05) !important;
+            }
+            table.dataTable td {
+                border-bottom: 1px solid #374151 !important; 
+                color: #d1d5db; 
+            }
+            table.dataTable th {
+                border-bottom: 1px solid #374151 !important;
+                color: #f3f4f6; 
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                color: #9ca3af !important;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+                color: white !important;
+                background: #4f46e5 !important; 
+                border: none !important;
+            }
         </style>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
+            <?php include('includes/topbar.php');?> 
+            
+            <div class="flex flex-1 pt-16">
+                
+                <?php include('includes/leftbar.php');?>
 
-            <!-- ========== TOP NAVBAR ========== -->
-   <?php include('includes/topbar.php');?> 
-            <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-            <div class="content-wrapper">
-                <div class="content-container">
-<?php include('includes/leftbar.php');?>  
-
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-6">
-                                    <h2 class="title">Manage Faculty Combination</h2>
-                                
-                                </div>
-                                
-                                <!-- /.col-md-6 text-right -->
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-7xl mx-auto">
+                        
+                        <!-- Breadcrumb & Title -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading text-white">Manage Faculty Combinations</h1>
+                                <nav class="flex mt-2 text-sm text-gray-400">
+                                    <a href="dashboard.php" class="hover:text-primary transition-colors">Home</a>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Faculty Combinations</span>
+                                </nav>
                             </div>
-                            <!-- /.row -->
-                            <div class="row breadcrumb-div">
-                                <div class="col-md-6">
-                                    <ul class="breadcrumb">
-            							<li><a href="dashboard.php"><i class="fa fa-home"></i> Home</a></li>
-                                        <li> Faculty</li>
-            							<li class="active">Manage Faculty Combination</li>
-            						</ul>
-                                </div>
-                             
-                            </div>
-                            <!-- /.row -->
                         </div>
-                        <!-- /.container-fluid -->
 
-                        <section class="section">
-                            <div class="container-fluid">
+                         <!-- Alerts -->
+                        <?php if($msg){?>
+                            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-check mr-2"></i>
+                                <strong>Well done!</strong> <span class="ml-2"><?php echo htmlentities($msg); ?></span>
+                            </div>
+                        <?php } else if($error){?>
+                            <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up" role="alert">
+                                <i class="fa-solid fa-circle-exclamation mr-2"></i>
+                                <strong>Oh snap!</strong> <span class="ml-2"><?php echo htmlentities($error); ?></span>
+                            </div>
+                        <?php } ?>
 
-                             
-
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <h5>View Faculty Combination Info</h5>
-                                                </div>
-                                            </div>
-<?php if($msg){?>
-<div class="alert alert-success left-icon-alert" role="alert">
- <strong>Well done!</strong><?php echo htmlentities($msg); ?>
- </div><?php } 
-else if($error){?>
-    <div class="alert alert-danger left-icon-alert" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                        </div>
-                                        <?php } ?>
-                                            <div class="panel-body p-20">
-
-                                                <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Faculty Name</th>
-                                                            <th>Class and Section</th>
-                                                            <th>Subject </th>
-                                                            <th>Status</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
+                        <!-- Content Card -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-6 shadow-xl animate-slide-up">
+                            <h2 class="text-xl font-bold font-heading mb-4 border-b border-white/10 pb-2">Faculty Combinations List</h2>
+                            
+                            <div class="overflow-x-auto">
+                                <table id="example" class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">#</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Faculty Name</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Class & Section</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Subject</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Status</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
 <?php $sql = "SELECT facultydata.FacultyName,classdata.ClassNameNumeric,classdata.ClassName,classdata.Section,subjectdata.SubjectName,facultycombinationdata.id as fcid,facultycombinationdata.status from facultycombinationdata join classdata on classdata.id=facultycombinationdata.ClassId  join subjectdata on subjectdata.id=facultycombinationdata.SubjectId join facultydata on facultydata.id=facultycombinationdata.FacultyId";
 $query = $dbh->prepare($sql);
 $query->execute();
@@ -149,94 +178,63 @@ if($query->rowCount() > 0)
 {
 foreach($results as $result)
 {   ?>
-<tr>
- <td><?php echo htmlentities($cnt);?></td>
- <td><?php echo htmlentities($result->FacultyName);?></td>
-                                                            <td><?php echo htmlentities($result->ClassName);?> &nbsp; <?php echo htmlentities($result->ClassNameNumeric);?> &nbsp; Section-<?php echo htmlentities($result->Section);?></td>
-                                                            <td><?php echo htmlentities($result->SubjectName);?></td>
-                                                             <td><?php $stts=$result->status;
-if($stts=='0')
-{
-	echo htmlentities('Inactive');
-}
-else
-{
-	echo htmlentities('Active');
-}
-                                                             ?></td>
-                                                            
-<td>
-<?php if($stts=='0')
-{ ?>
-<a href="manage-facultycombination.php?acid=<?php echo htmlentities($result->fcid);?>" onclick="confirm('do you really want to ativate this combination');"><i class="fa fa-check" title="Acticvate Record"></i> </a><?php } else {?>
-
-<a href="manage-facultycombination.php?did=<?php echo htmlentities($result->fcid);?>" onclick="confirm('do you really want to deativate this combination');"><i class="fa fa-times" title="Deactivate Record"></i> </a>
-<?php }?>
-</td>
-</tr>
+                                        <tr class="hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
+                                            <td class="py-3 px-4"><?php echo htmlentities($cnt);?></td>
+                                            <td class="py-3 px-4 font-medium"><?php echo htmlentities($result->FacultyName);?></td>
+                                            <td class="py-3 px-4"><?php echo htmlentities($result->ClassName);?> &nbsp; <?php echo htmlentities($result->ClassNameNumeric);?> &nbsp; Section-<?php echo htmlentities($result->Section);?></td>
+                                            <td class="py-3 px-4"><?php echo htmlentities($result->SubjectName);?></td>
+                                            <td class="py-3 px-4">
+                                                <?php $stts=$result->status;
+                                                if($stts=='0') { ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20">Inactive</span>
+                                                <?php } else { ?>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Active</span>
+                                                <?php } ?>
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <?php if($stts=='0') { ?>
+                                                    <a href="manage-facultycombination.php?acid=<?php echo htmlentities($result->fcid);?>" onclick="return confirm('Do you really want to activate this combination?');" class="text-emerald-400 hover:text-emerald-300 transition-colors" title="Activate">
+                                                        <i class="fa-solid fa-check"></i>
+                                                    </a>
+                                                <?php } else { ?>
+                                                    <a href="manage-facultycombination.php?did=<?php echo htmlentities($result->fcid);?>" onclick="return confirm('Do you really want to deactivate this combination?');" class="text-red-400 hover:text-red-300 transition-colors" title="Deactivate">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </a>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
 <?php $cnt=$cnt+1;}} ?>
-                                                       
-                                                    
-                                                    </tbody>
-                                                </table>
-
-                                         
-                                                <!-- /.col-md-12 -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                                               
-                                                </div>
-                                                <!-- /.col-md-12 -->
-                                            </div>
-                                        </div>
-                                        <!-- /.panel -->
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                </div>
-                                <!-- /.row -->
-
+                                    </tbody>
+                                </table>
                             </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
+                        </div>
 
                     </div>
-                    <!-- /.main-page -->
-
-                    
-
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
+
+        <!-- Scripts -->
         <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-        <script src="js/prism/prism.js"></script>
-        <script src="js/DataTables/datatables.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        
         <script>
-            $(function($) {
-                $('#example').DataTable();
-
-                $('#example2').DataTable( {
-                    "scrollY":        "300px",
-                    "scrollCollapse": true,
-                    "paging":         false
-                } );
-
-                $('#example3').DataTable();
+            $(document).ready(function() {
+                $('#example').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "language": {
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Search faculty combinations...",
+                    }
+                });
             });
         </script>
     </body>
 </html>
 <?php } ?>
-

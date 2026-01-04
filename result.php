@@ -9,206 +9,172 @@ include('includes/config.php');
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Result Management System</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" >
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
+        <title>Result | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
     </head>
-    <body>
-        <div class="main-wrapper">
-            <div class="content-wrapper">
-                <div class="content-container">
+    <body class="bg-darker text-white font-sans antialiased min-h-screen relative overflow-x-hidden">
+        
+        <!-- Navbar -->
+        <div class="bg-surface/50 backdrop-blur-md border-b border-white/10 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center gap-3">
+                         <div class="bg-primary/20 p-2 rounded-lg text-primary">
+                            <i class="fa-solid fa-graduation-cap text-xl"></i>
+                         </div>
+                         <h1 class="text-xl font-bold font-heading text-white hidden sm:block">Academic Portal</h1>
+                    </div>
+                    <a href="index.php" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Back to Home</a>
+                </div>
+            </div>
+        </div>
 
-         
-                    <!-- /.left-sidebar -->
+        <div class="container mx-auto px-4 py-12">
+            
+            <div class="max-w-4xl mx-auto">
+                
+                <?php
+                if(isset($_POST['rollid']) && isset($_POST['class'])) {
+                $rollid = $_POST['rollid'];
+                $classid = $_POST['class'];
+                $_SESSION['rollid'] = $rollid;
+                $_SESSION['classid'] = $classid;
 
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-12">
-                                    <h2 class="title" align="center">Result Management System</h2>
-                                </div>
+                // Query Student Data with new schema
+                $qery = "SELECT sd.StudentName, sd.RollId, sd.StudentId, cd.ClassName, cd.Section 
+                         FROM studentdata sd 
+                         JOIN classdata cd ON cd.id = sd.ClassId 
+                         WHERE sd.RollId = :rollid AND sd.ClassId = :classid";
+                $stmt = $dbh->prepare($qery);
+                $stmt->bindParam(':rollid', $rollid, PDO::PARAM_STR);
+                $stmt->bindParam(':classid', $classid, PDO::PARAM_STR);
+                $stmt->execute();
+                $resultss = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if($stmt->rowCount() > 0) {
+                    $studentId = $resultss['StudentId'];
+                    $studentName = $resultss['StudentName'];
+                    $rollId = $resultss['RollId'];
+                    $className = $resultss['ClassName'];
+                    $section = $resultss['Section'];
+                ?>
+                
+                    <!-- Student Info Card -->
+                    <div class="bg-surface border border-white/10 rounded-2xl p-8 shadow-2xl mb-8 animate-fade-in relative overflow-hidden">
+                        <!-- Decorations -->
+                        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+                        
+                        <h2 class="text-2xl font-bold font-heading text-white mb-6 flex items-center gap-3">
+                            <i class="fa-solid fa-user-graduate text-primary"></i> Result Declaration
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-dark/30 rounded-xl p-4 border border-white/5">
+                                <p class="text-sm text-gray-400 mb-1">Student Name</p>
+                                <p class="text-lg font-medium text-white"><?php echo htmlentities($studentName);?></p>
                             </div>
-                            <!-- /.row -->
-                          
-                            <!-- /.row -->
+                            <div class="bg-dark/30 rounded-xl p-4 border border-white/5">
+                                <p class="text-sm text-gray-400 mb-1">Roll ID</p>
+                                <p class="text-lg font-medium text-white"><?php echo htmlentities($rollId);?></p>
+                            </div>
+                            <div class="bg-dark/30 rounded-xl p-4 border border-white/5 md:col-span-2">
+                                <p class="text-sm text-gray-400 mb-1">Class</p>
+                                <p class="text-lg font-medium text-white"><?php echo htmlentities($className);?> (Section: <?php echo htmlentities($section);?>)</p>
+                            </div>
                         </div>
-                        <!-- /.container-fluid -->
+                    </div>
 
-                        <section class="section">
-                            <div class="container-fluid">
+                    <!-- Marks Table -->
+                    <div class="bg-surface border border-white/10 rounded-2xl p-8 shadow-2xl animate-slide-up relative z-10">
+                        <h3 class="text-xl font-bold font-heading text-white mb-6 border-b border-white/10 pb-2">Marks Details</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-white/10">
+                                        <th class="py-4 px-4 font-semibold text-sm uppercase text-gray-400">#</th>
+                                        <th class="py-4 px-4 font-semibold text-sm uppercase text-gray-400">Subject</th>
+                                        <th class="py-4 px-4 font-semibold text-sm uppercase text-gray-400 text-right">Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm">
+                                    <?php 
+                                    // Query Result Data with new schema
+                                    $query = "SELECT s.SubjectName, rd.marks 
+                                              FROM resultdata rd 
+                                              JOIN subjectdata s ON s.id = rd.SubjectId 
+                                              WHERE rd.StudentId = :studentid";
+                                    $stmt = $dbh->prepare($query);
+                                    $stmt->bindParam(':studentid', $studentId, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    
+                                    $cnt = 1;
+                                    $hasResults = false;
+                                    if($stmt->rowCount() > 0) {
+                                        $hasResults = true;
+                                        foreach($results as $row) {
+                                            $marks = $row['marks'];
+                                    ?>
+                                    <tr class="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
+                                        <td class="py-4 px-4 text-gray-500"><?php echo htmlentities($cnt);?></td>
+                                        <td class="py-4 px-4 font-medium text-white"><?php echo htmlentities($row['SubjectName']);?></td>
+                                        <td class="py-4 px-4 font-bold text-right text-emerald-400"><?php echo htmlentities($marks);?></td>
+                                    </tr>
+                                    <?php 
+                                            $cnt++;
+                                        } 
+                                    } else {
+                                        echo '<tr><td colspan="3" class="py-6 text-center text-gray-400">No results found relative to this roll number.</td></tr>';
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
 
-                                <div class="row">
-                              
-                             
-
-                                    <div class="col-md-8 col-md-offset-2">
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-<?php
-// code Student Data
-$rollid=$_POST['rollid'];
-$classid=$_POST['class'];
-$_SESSION['rollid']=$rollid;
-$_SESSION['classid']=$classid;
-$qery = "SELECT   tblstudents.StudentName,tblstudents.RollId,tblstudents.RegDate,tblstudents.StudentId,tblstudents.Status,tblclasses.ClassName,tblclasses.Section from tblstudents join tblclasses on tblclasses.id=tblstudents.ClassId where tblstudents.RollId=:rollid and tblstudents.ClassId=:classid ";
-$stmt = $dbh->prepare($qery);
-$stmt->bindParam(':rollid',$rollid,PDO::PARAM_STR);
-$stmt->bindParam(':classid',$classid,PDO::PARAM_STR);
-$stmt->execute();
-$resultss=$stmt->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($stmt->rowCount() > 0)
-{
-foreach($resultss as $row)
-{   ?>
-<p><b>Student Name :</b> <?php echo htmlentities($row->StudentName);?></p>
-<p><b>Student Roll Id :</b> <?php echo htmlentities($row->RollId);?>
-<p><b>Student Class:</b> <?php echo htmlentities($row->ClassName);?>(<?php echo htmlentities($row->Section);?>)
-<?php }
-
-    ?>
-                                            </div>
-                                            <div class="panel-body p-20">
-
-
-
-
-
-
-
-                                                <table class="table table-hover table-bordered">
-                                                <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Subject</th>    
-                                                            <th>Marks</th>
-                                                        </tr>
-                                               </thead>
-  
-
-
-                                                	
-                                                	<tbody>
-<?php                                              
-// Code for result
-
- $query ="select t.StudentName,t.RollId,t.ClassId,t.marks,SubjectId,tblsubjects.SubjectName from (select sts.StudentName,sts.RollId,sts.ClassId,tr.marks,SubjectId from tblstudents as sts join  tblresult as tr on tr.StudentId=sts.StudentId) as t join tblsubjects on tblsubjects.id=t.SubjectId where (t.RollId=:rollid and t.ClassId=:classid)";
-$query= $dbh -> prepare($query);
-$query->bindParam(':rollid',$rollid,PDO::PARAM_STR);
-$query->bindParam(':classid',$classid,PDO::PARAM_STR);
-$query-> execute();  
-$results = $query -> fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($countrow=$query->rowCount()>0)
-{ 
-
-foreach($results as $result){
-
-    ?>
-
-                                                		<tr>
-                                                <th scope="row"><?php echo htmlentities($cnt);?></th>
-                                                			<td><?php echo htmlentities($result->SubjectName);?></td>
-                                                			<td><?php echo htmlentities($totalmarks=$result->marks);?></td>
-                                                		</tr>
-<?php 
-$totlcount+=$totalmarks;
-$cnt++;}
-?>
-<tr>
-                                                <th scope="row" colspan="2">Total Marks</th>
-<td><b><?php echo htmlentities($totlcount); ?></b> out of <b><?php echo htmlentities($outof=($cnt-1)*100); ?></b></td>
-                                                        </tr>
-<tr>
-                                                <th scope="row" colspan="2">Percntage</th>           
-                                                            <td><b><?php echo  htmlentities($totlcount*(100)/$outof); ?> %</b></td>
-                                                             </tr>
-<tr>
-                                                <th scope="row" colspan="2">Download Result</th>           
-                                                            <td><b><a href="download-result.php">Download </a> </b></td>
-                                                             </tr>
-
- <?php } else { ?>     
-<div class="alert alert-warning left-icon-alert" role="alert">
-                                            <strong>Notice!</strong> Your result not declare yet
- <?php }
-?>
-                                        </div>
- <?php 
- } else
- {?>
-
-<div class="alert alert-danger left-icon-alert" role="alert">
-strong>Oh snap!</strong>
-<?php
-echo htmlentities("Invalid Roll Id");
- }
-?>
-                                        </div>
-
-
-
-                                                	</tbody>
-                                                </table>
-
-                                            </div>
-                                        </div>
-                                        <!-- /.panel -->
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                    <div class="form-group">
-                                                           
-                                                            <div class="col-sm-6">
-                                                               <a href="index.php">Back to Home</a>
-                                                            </div>
-                                                        </div>
-
-                                </div>
-                                <!-- /.row -->
-  
-                            </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
+                        <?php if($hasResults) { ?>
+                        <div class="mt-8 pt-6 border-t border-white/10 flex justify-center">
+                            <!-- Note: The existing download script might need Year/Month. 
+                                 Since this public view shows ALL results, we might not be able to direct link to a PDF 
+                                 unless we pick a specific semester or the download script is updated to handle 'All'. 
+                                 For now, suppressing link or linking to a static 'Please contact admin' if dynamic generation isn't ready for 'All'.
+                                 actually, let's link to index or print. -->
+                            
+                             <button onclick="window.print()" class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-indigo-500/20 transform transition-all hover:scale-105 active:scale-95">
+                                <i class="fa-solid fa-print"></i> Print Result
+                             </button>
+                        </div>
+                        <?php } ?>
 
                     </div>
-                    <!-- /.main-page -->
 
-                  
-                </div>
-                <!-- /.content-container -->
+                <?php 
+                } else { ?>
+                    <!-- Invalid Roll ID Alert -->
+                     <div class="max-w-md mx-auto mt-20">
+                        <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-6 text-center animate-shake">
+                            <i class="fa-solid fa-circle-exclamation text-4xl text-red-500 mb-4"></i>
+                            <h2 class="text-xl font-bold text-white mb-2">Invalid Details</h2>
+                            <p class="text-gray-400 mb-6">No student found with the provided Roll Number and Class.</p>
+                            <a href="find-result.php" class="inline-flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors">
+                                <i class="fa-solid fa-arrow-left"></i> Try Again
+                            </a>
+                        </div>
+                    </div>
+                <?php } 
+                } else {
+                    // Redirect if accessing directly
+                    echo "<script>window.location.href = 'find-result.php';</script>";
+                }
+                ?>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
-
-        <!-- ========== COMMON JS FILES ========== -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
-        <script>
-            $(function($) {
-
-            });
-        </script>
-
-        <!-- ========== ADD custom.js FILE BELOW WITH YOUR CHANGES ========== -->
 
     </body>
 </html>

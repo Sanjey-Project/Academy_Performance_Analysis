@@ -35,7 +35,10 @@ if(!empty($_POST["classid1"]))
  
  while($row=$stmt->fetch(PDO::FETCH_ASSOC))
  {?>
-  <p> <?php echo htmlentities($row['SubjectName']); ?><input type="text"  name="marks[]" value="" class="form-control" required="" placeholder="Enter the Grade" autocomplete="off"></p>
+    <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-400 mb-2"><?php echo htmlentities($row['SubjectName']); ?></label>
+        <input type="text" name="marks[]" value="" class="w-full bg-dark/50 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-white transition-all" required="" placeholder="Enter Grade (e.g., O, A+, A)" autocomplete="off">
+    </div>
   
 <?php  }
 }
@@ -61,14 +64,14 @@ $results = $query -> fetchAll(PDO::FETCH_OBJ);
 $cnt=1;
 if($query -> rowCount() > 0)
 { ?>
-<p>
+<div class="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg mb-6 flex items-center animate-slide-up">
+    <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+    <span>Result Already Declared for this Student.</span>
+</div>
 <?php
-echo "<span style='color:red'> Result Already Declare .</span>";
- echo "<script>$('#submit').prop('disabled',true);</script>";
- ?></p>
+ echo "<script>$('#submit').prop('disabled',true);$('#submit').addClass('opacity-50 cursor-not-allowed');</script>";
+ ?>
 <?php }
 
 
   }?>
-
-

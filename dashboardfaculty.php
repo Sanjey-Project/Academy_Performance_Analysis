@@ -9,238 +9,182 @@ if(strlen($_SESSION['alogin'])=="")
     else{
         $facultyid = $_SESSION['id'];
         $sql = "SELECT FacultyName FROM facultydata WHERE id = :facultyid";
-    $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(':facultyid', $facultyid,PDO::PARAM_INT);
-    $stmt->execute();
-    $facultyIdRow = $stmt->fetch(PDO::FETCH_ASSOC);
-    $facultyname = $facultyIdRow['FacultyName'];
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':facultyid', $facultyid,PDO::PARAM_INT);
+        $stmt->execute();
+        $facultyIdRow = $stmt->fetch(PDO::FETCH_ASSOC);
+        $facultyname = $facultyIdRow['FacultyName'];
         ?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Admin Home</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/toastr/toastr.min.css" media="screen" >
-        <link rel="stylesheet" href="css/icheck/skins/line/blue.css" >
-        <link rel="stylesheet" href="css/icheck/skins/line/red.css" >
-        <link rel="stylesheet" href="css/icheck/skins/line/green.css" >
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
-        <script src="js/amcharts/amcharts.js"></script>
-<script src="js/amcharts/serial.js"></script>
-
-        </style>
+        <title>Faculty Dashboard | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
-              <?php include('includes/topbarfaculty.php');?>
-            <div class="content-wrapper">
-                <div class="content-container">
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
+            <?php include('includes/topbarfaculty.php');?>
+            
+            <div class="flex flex-1 pt-16">
+                
+                <?php include('includes/leftbarfaculty.php');?>
 
-                    <?php include('includes/leftbarfaculty.php');?>
-
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-sm-6">
-                                    <h2 class="title">Dashboard</h2>
-
-                                </div>
-                                <!-- /.col-sm-6 -->
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-7xl mx-auto">
+                        
+                        <!-- Page Title -->
+                        <div class="flex items-center justify-between mb-8 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading">Welcome, <?php echo htmlentities($facultyname); ?></h1>
+                                <p class="text-gray-400 mt-1">Faculty Dashboard</p>
                             </div>
-                            <!-- /.row -->
-
+                            <div class="hidden sm:block">
+                                <span class="bg-surface border border-white/10 px-4 py-2 rounded-lg text-sm text-gray-300">
+                                    <i class="fa-regular fa-calendar mr-2"></i> <?php echo date("F j, Y"); ?>
+                                </span>
+                            </div>
                         </div>
-                        <!-- /.container-fluid -->
 
-                        <section class="section">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-primary" href="studentwisefc.php">
-<?php
-$sql1 ="SELECT sd.StudentId, sd.StudentName
-FROM studentdata sd
-JOIN classdata cd ON sd.ClassID = cd.id
-JOIN facultycombinationdata fcd ON cd.id = fcd.ClassId
-JOIN facultydata fd ON fcd.FacultyId = fd.id
-WHERE fd.id ='$facultyid'; ";
-$query1 = $dbh -> prepare($sql1);
-$query1->execute();
-$results1=$query1->fetchAll(PDO::FETCH_OBJ);
-$totalstudents=$query1->rowCount();
-?>
-
-                                            <span class="number counter"><?php echo htmlentities($totalstudents);?></span>
-                                            <span class="name">Students</span>
-                                            <span class="bg-icon"><i class="fa fa-users"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-danger" href="manage-subjects.php">
-<?php
-$sql ="SELECT subd.id
-FROM subjectdata subd
-JOIN facultycombinationdata fcd ON subd.id=fcd.SubjectId
-JOIN facultydata fd ON fcd.FacultyId = fd.id
-WHERE fd.id ='$facultyid';
- ";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$totalsubjects=$query->rowCount();
-?>
-                                            <span class="number counter"><?php echo htmlentities($totalsubjects);?></span>
-                                            <span class="name">Subjects Listed</span>
-                                            <span class="bg-icon"><i class="fa fa-ticket"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-warning" href="manage-classes.php">
-                                        <?php
-$sql2 ="SELECT cd.id FROM classdata cd
-JOIN facultycombinationdata fcd ON cd.id=fcd.ClassId
-JOIN facultydata fd ON fcd.FacultyId=fd.id
-WHERE fd.id = '$facultyid';
-";
-$query2 = $dbh -> prepare($sql2);
-$query2->execute();
-$results2=$query2->fetchAll(PDO::FETCH_OBJ);
-$totalclasses=$query2->rowCount();
-?>
-                                            <span class="number counter"><?php echo htmlentities($totalclasses);?></span>
-                                            <span class="name">Total classes listed</span>
-                                            <span class="bg-icon"><i class="fa fa-bank"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <a class="dashboard-stat bg-success" href="manage-results.php">
-                                        <?php
-$sql3="SELECT
-fc.FacultyId,
-rc.ClassId,
-rc.SubjectId,
-COUNT(rc.Grades) AS total_grades,
-COUNT(CASE WHEN rc.Grades > 0 THEN 1 ELSE NULL END) AS total_grades_greater_than_zero,
-(COUNT(CASE WHEN rc.Grades > 0 THEN 1 ELSE NULL END) * 100.0) / NULLIF(COUNT(rc.Grades), 0) AS percentage_grades_greater_than_zero
-FROM
-resultdata rc
-JOIN
-facultycombinationdata fc ON rc.ClassId = fc.ClassId AND rc.SubjectId = fc.SubjectId
-JOIN
-facultydata fd ON fc.FacultyId = fd.id
-WHERE
-fd.id = '$facultyid';
-";
-$query3 = $dbh -> prepare($sql3);
-$query3->execute();
-$results3=$query3->fetchAll(PDO::FETCH_OBJ);
-$percentage_grades_greater_than_zero = $results3[0]->percentage_grades_greater_than_zero;
-?>
-
-                                            <span class="number counter"><?php echo htmlentities($percentage_grades_greater_than_zero);?></span>
-                                            <span class="name">Total Pass Percentage</span>
-                                            <span class="bg-icon"><i class="fa fa-file-text"></i></span>
-                                        </a>
-                                        <!-- /.dashboard-stat -->
-                                    </div>
-                                    <!-- /.col-lg-3 col-md-3 col-sm-6 col-xs-12 -->
-
-                                </div>
-                                <!-- /.row -->
-                            </div>
-                            <!-- /.container-fluid -->
+                        <!-- Stats Grid -->
+                        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-slide-up">
                             
+                            <!-- Students -->
+                            <a href="studentwisefc.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-sky-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/10">
+                                <?php
+                                $sql1 ="SELECT sd.StudentId FROM studentdata sd JOIN classdata cd ON sd.ClassID = cd.id JOIN facultycombinationdata fcd ON cd.id = fcd.ClassId JOIN facultydata fd ON fcd.FacultyId = fd.id WHERE fd.id ='$facultyid'; ";
+                                $query1 = $dbh -> prepare($sql1);
+                                $query1->execute();
+                                $totalstudents=$query1->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-users text-6xl text-sky-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalstudents);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Students</p>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-sky-500 to-cyan-600"></div>
+                            </a>
+
+                            <!-- Subjects Listed -->
+                            <a href="manage-subjects.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-red-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                                <?php
+                                $sql ="SELECT subd.id FROM subjectdata subd JOIN facultycombinationdata fcd ON subd.id=fcd.SubjectId JOIN facultydata fd ON fcd.FacultyId = fd.id WHERE fd.id ='$facultyid'; ";
+                                $query = $dbh -> prepare($sql);
+                                $query->execute();
+                                $totalsubjects=$query->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-book-open text-6xl text-red-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalsubjects);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Subjects Listed</p>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-600"></div>
+                            </a>
+
+                            <!-- Classes Listed -->
+                            <a href="manage-classes.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/10">
+                                <?php
+                                $sql2 ="SELECT cd.id FROM classdata cd JOIN facultycombinationdata fcd ON cd.id=fcd.ClassId JOIN facultydata fd ON fcd.FacultyId=fd.id WHERE fd.id = '$facultyid'; ";
+                                $query2 = $dbh -> prepare($sql2);
+                                $query2->execute();
+                                $totalclasses=$query2->rowCount();
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-chalkboard text-6xl text-yellow-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities($totalclasses);?></h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Classes Listed</p>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-amber-600"></div>
+                            </a>
+
+                            <!-- Pass Percentage -->
+                            <a href="manage-results.php" class="relative overflow-hidden bg-surface border border-white/10 rounded-2xl p-6 group hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
+                                <?php
+                                $sql3="SELECT COUNT(rc.Grades) AS total_grades, COUNT(CASE WHEN rc.Grades > 0 THEN 1 ELSE NULL END) AS total_grades_greater_than_zero, (COUNT(CASE WHEN rc.Grades > 0 THEN 1 ELSE NULL END) * 100.0) / NULLIF(COUNT(rc.Grades), 0) AS percentage_grades_greater_than_zero FROM resultdata rc JOIN facultycombinationdata fc ON rc.ClassId = fc.ClassId AND rc.SubjectId = fc.SubjectId JOIN facultydata fd ON fc.FacultyId = fd.id WHERE fd.id = '$facultyid'; ";
+                                $query3 = $dbh -> prepare($sql3);
+                                $query3->execute();
+                                $results3=$query3->fetchAll(PDO::FETCH_OBJ);
+                                $percentage_grades_greater_than_zero = $results3[0]->percentage_grades_greater_than_zero;
+                                ?>
+                                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <i class="fa-solid fa-percent text-6xl text-emerald-500"></i>
+                                </div>
+                                <div class="relative z-10">
+                                    <h2 class="text-4xl font-bold font-heading text-white mb-1"><?php echo htmlentities(round($percentage_grades_greater_than_zero, 1));?>%</h2>
+                                    <p class="text-gray-400 text-sm font-medium uppercase tracking-wider">Pass Percentage</p>
+                                </div>
+                                <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
+                            </a>
+
                         </section>
-                        <!-- /.section -->
+
+                         <!-- Charts -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-6 animate-slide-up" style="animation-delay: 0.1s;">
+                            <h3 class="text-xl font-bold font-heading mb-6">Subject Performance</h3>
+                            <div class="relative h-64 w-full">
+                                <canvas id="facultyChart"></canvas>
+                            </div>
+                        </div>
 
                     </div>
-                    <!-- /.main-page -->
-
-
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
 
-        <!-- ========== COMMON JS FILES ========== -->
-        <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/jquery-ui/jquery-ui.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-        <script src="js/waypoint/waypoints.min.js"></script>
-        <script src="js/counterUp/jquery.counterup.min.js"></script>
-        <!--script src="js/amcharts/amcharts.js"></script>
-        <script src="js/amcharts/serial.js"></script>
-        <script src="js/amcharts/plugins/export/export.min.js"></script>
-        <link rel="stylesheet" href="js/amcharts/plugins/export/export.css" type="text/css" media="all" />
-        <script src="js/amcharts/themes/light.js"></script-->
-
-        <script src="js/toastr/toastr.min.js"></script>
-        <script src="js/icheck/icheck.min.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/light.js"></script>
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
-        <script src="js/production-chart.js"></script>
-        <script src="js/traffic-chart.js"></script>
-        <script src="js/task-list.js"></script>
         <script>
-            $(function(){
-
-                // Counter for dashboard stats
-                $('.counter').counterUp({
-                    delay: 10,
-                    time: 1000
-                });
-
-                // Welcome notification
-                toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": false,
-                  "progressBar": false,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": false,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
+            const ctx = document.getElementById('facultyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Subject A', 'Subject B', 'Subject C', 'Subject D'], // Placeholder
+                    datasets: [{
+                        label: 'Average Score',
+                        data: [75, 82, 68, 90], // Placeholder
+                        backgroundColor: 'rgba(14, 165, 233, 0.5)', // Sky 500
+                        borderColor: '#0ea5e9',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#9ca3af' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#9ca3af' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    }
                 }
-                toastr["success"]( "Welcome to Academic Performance Analysis System!");
-
             });
         </script>
-            </body>
+    </body>
 </html>
 <?php } ?>

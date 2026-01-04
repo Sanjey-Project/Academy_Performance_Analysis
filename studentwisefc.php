@@ -1,7 +1,6 @@
-
 <?php
 session_start();
-    error_reporting(0);
+error_reporting(0);
 include('includes/config.php');
 if(strlen($_SESSION['alogin'])=="")
     {   
@@ -48,12 +47,13 @@ if(strlen($_SESSION['alogin'])=="")
     $query->execute();
     $results = $query->fetchAll(PDO::FETCH_OBJ);
     $chartData = [];
+    $labels = [];
+    $data_percentage = [];
+
     if ($query->rowCount() > 0) {
         foreach ($results as $result) {
-            $chartData[] = [
-                'StudentName' => $result->StudentName,
-                'PassPercentage' => $result->PassPercentage
-            ];
+            $labels[] = $result->StudentName;
+            $data_percentage[] = floatval($result->PassPercentage);
         }
     }
 ?>
@@ -63,254 +63,237 @@ if(strlen($_SESSION['alogin'])=="")
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
     	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Student Wise</title>
-        <link rel="stylesheet" href="css/bootstrap.min.css" media="screen" >
-        <link rel="stylesheet" href="css/font-awesome.min.css" media="screen" >
-        <link rel="stylesheet" href="css/animate-css/animate.min.css" media="screen" >
-        <link rel="stylesheet" href="css/lobipanel/lobipanel.min.css" media="screen" >
-        <link rel="stylesheet" href="css/prism/prism.css" media="screen" > <!-- USED FOR DEMO HELP - YOU CAN REMOVE IT -->
-        <link rel="stylesheet" type="text/css" href="js/DataTables/datatables.min.css"/>
-        <link rel="stylesheet" href="css/main.css" media="screen" >
-        <script src="js/modernizr/modernizr.min.js"></script>
-        <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
-          <style>
-            
-        btn-secondary{--bs-btn-color:#fff;--bs-btn-bg:#6c757d;--bs-btn-border-color:#6c757d;--bs-btn-hover-color:#fff;--bs-btn-hover-bg:#5c636a;--bs-btn-hover-border-color:#565e64;--bs-btn-focus-shadow-rgb:130,138,145;--bs-btn-active-color:#fff;--bs-btn-active-bg:#565e64;--bs-btn-active-border-color:#51585e;--bs-btn-active-shadow:inset 0 3px 5px rgba(0, 0, 0, 0.125);--bs-btn-disabled-color:#fff;--bs-btn-disabled-bg:#6c757d;--bs-btn-disabled-border-color:#6c757d;}
+        <title>Student Wise Performance | Academic Portal</title>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/tailwind-config.js"></script>
+         <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+         <!-- DataTables CSS for Tailwind -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
+        <style>
+             /* Custom Scrollbar for dark theme */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #0f172a; 
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #334155; 
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #475569; 
+            }
 
-        .errorWrap {
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #dd3d36;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
-.succWrap{
-    padding: 10px;
-    margin: 0 0 20px 0;
-    background: #fff;
-    border-left: 4px solid #5cb85c;
-    -webkit-box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-}
+            /* DataTables Customization for Dark Theme */
+            .dataTables_wrapper .dataTables_length, 
+            .dataTables_wrapper .dataTables_filter, 
+            .dataTables_wrapper .dataTables_info, 
+            .dataTables_wrapper .dataTables_processing, 
+            .dataTables_wrapper .dataTables_paginate {
+                color: #9ca3af !important; /* text-gray-400 */
+                margin-bottom: 1rem;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                background-color: #1e293b; 
+                border: 1px solid #374151; 
+                color: #e5e7eb; 
+                border-radius: 0.375rem;
+                padding: 0.25rem 0.5rem;
+            }
+            .dataTables_wrapper .dataTables_length select {
+                background-color: #1e293b;
+                border: 1px solid #374151;
+                color: #e5e7eb;
+                border-radius: 0.375rem;
+                padding: 0.25rem 2rem 0.25rem 0.5rem;
+            }
+            table.dataTable tbody tr {
+                background-color: transparent !important;
+            }
+            table.dataTable tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.05) !important;
+            }
+            table.dataTable td {
+                border-bottom: 1px solid #374151 !important; 
+                color: #d1d5db; 
+            }
+            table.dataTable th {
+                border-bottom: 1px solid #374151 !important;
+                color: #f3f4f6; 
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button {
+                color: #9ca3af !important;
+            }
+            .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+                color: white !important;
+                background: #4f46e5 !important; 
+                border: none !important;
+            }
         </style>
     </head>
-    <body class="top-navbar-fixed">
-        <div class="main-wrapper">
+    <body class="bg-darker text-white font-sans antialiased overflow-x-hidden">
+        
+        <div class="min-h-screen flex flex-col">
+            
+            <?php include('includes/topbarfaculty.php');?> 
+            
+            <div class="flex flex-1 pt-16">
+                
+                <?php include('includes/leftbarfaculty.php');?>
 
-            <!-- ========== TOP NAVBAR ========== -->
-   <?php include('includes/topbarfaculty.php');?> 
-            <!-- ========== WRAPPER FOR BOTH SIDEBARS & MAIN CONTENT ========== -->
-            <div class="content-wrapper">
-                <div class="content-container">
-<?php include('includes/leftbarfaculty.php');?>  
-
-                    <div class="main-page">
-                        <div class="container-fluid">
-                            <div class="row page-title-div">
-                                <div class="col-md-6">
-                                    <h2 class="title">Student Wise Result</h2>
-                                
-                                </div>
-                                
-                                <!-- /.col-md-6 text-right -->
+                <main class="flex-1 lg:ml-64 p-6 transition-all duration-300">
+                    
+                    <div class="max-w-7xl mx-auto">
+                        
+                         <!-- Breadcrumb & Title -->
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 animate-fade-in">
+                            <div>
+                                <h1 class="text-3xl font-bold font-heading text-white">Student Result Analysis</h1>
+                                <nav class="flex mt-2 text-sm text-gray-400">
+                                    <a href="dashboardfaculty.php" class="hover:text-primary transition-colors">Home</a>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Analysis</span>
+                                    <span class="mx-2">/</span>
+                                    <span class="text-gray-200">Student Wise</span>
+                                </nav>
                             </div>
-                            <!-- /.row -->
-                            <div class="row breadcrumb-div">
-                                <div class="col-md-6">
-                                    <ul class="breadcrumb">
-            							<li><a href="dashboarddept.php"><i class="fa fa-home"></i> Home</a></li>
-                                        <li> Results</li>
-            							<li class="active">Classes</li>
-            						</ul>
-                                </div>
-                             
-                            </div>
-                            <!-- /.row -->
                         </div>
-                        <!-- /.container-fluid -->
 
-                        <section class="section">
-                            <div class="container-fluid">
-
-                             
-
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        <div class="panel">
-                                            <div class="panel-heading">
-                                                <div class="panel-title">
-                                                    <h5>View Classes Info</h5>
-                                                </div>
-                                            </div>
-<?php if($msg){?>
-<div class="alert alert-success left-icon-alert" role="alert">
- <strong>Well done!</strong><?php echo htmlentities($msg); ?>
- </div><?php } 
-else if($error){?>
-    <div class="alert alert-danger left-icon-alert" role="alert">
-                                            <strong>Oh snap!</strong> <?php echo htmlentities($error); ?>
-                                        </div>
-                                        <?php } ?>
-                                            <div class="panel-body p-20">
-
-                                                <table id="example" class="display table table-striped table-bordered" cellspacing="0" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>#</th>
-                                                            <th>Student Name</th>
-                                                            <th>Year Name</th>
-                                                            <th>Section</th>
-                                                            <th>Pass Percentage</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <?php
-                                        $sql="SELECT 
-                                        sd.StudentName, 
-                                        cd.ClassNameNumeric, 
-                                        cd.Section, 
-                                        CONCAT(
-                                            CASE 
-                                                WHEN rd.Grades > 0 THEN '100%' 
-                                                ELSE '0%' 
-                                            END
-                                        ) AS 'Grade'
-                                    FROM 
-                                        studentdata sd
-                                        JOIN resultdata rd ON sd.StudentId = rd.StudentId
-                                        JOIN classdata cd ON rd.ClassId = cd.id
-                                        JOIN facultycombinationdata fcd ON rd.ClassId = fcd.ClassId
-                                        JOIN facultydata fd ON fcd.FacultyId = fd.id
-                                    WHERE 
-                                        fd.id = (
-                                            SELECT id 
-                                            FROM facultydata 
-                                            WHERE FacultyName =:facultyname
-                                        )
-                                        AND rd.SubjectId IN (
-                                            SELECT SubjectId 
-                                            FROM facultycombinationdata 
-                                            WHERE FacultyId = fd.id
-                                              AND ClassId = cd.id
-                                        );
-                                    ";
-                                 
-                                        $query = $dbh->prepare($sql);
-                                        $query->bindParam(':facultyname',$facultyname,PDO::PARAM_STR);
-                                        $query->execute();
-                                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                        $cnt = 1;
-                                        if ($query->rowCount() > 0) {
-                                            foreach ($results as $result) {
-                                                //$pass_percentage = ($result->{'Passed Subjects'} / $result->{'Total Subjects'}) * 100;
-                                                ?>
-                                                <tr>
-                                                    <td><?php echo htmlentities($cnt); ?></td>
-                                                    <td><?php echo htmlentities($result->StudentName); ?></td>
-                                                    <td><?php echo htmlentities($result->ClassNameNumeric); ?></td>
-                                                    <td><?php echo htmlentities($result->Section); ?></td>
-                                                    <td><?php echo htmlentities($result->{'Grade'}); ?></td>
-</tr>
-<?php $cnt=$cnt+1;}} ?>
-                                                       
-                                                    
-                                                    </tbody>
-                                                </table>
-
-                                                <div id="chartdiv" style="width: 100%; height: 500px;"></div>
-                                                <!-- /.col-md-12 -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                                               
-                                                </div>
-                                                <!-- /.col-md-12 -->
-                                            </div>
-                                        </div>
-                                        <!-- /.panel -->
-                                    </div>
-                                    <!-- /.col-md-6 -->
-
-                                </div>
-                                <!-- /.row -->
-
+                        <!-- Chart Section -->
+                         <div class="bg-surface border border-white/10 rounded-2xl p-6 shadow-xl mb-8 animate-slide-up">
+                            <h2 class="text-xl font-bold font-heading mb-4 text-white flex items-center gap-2">
+                                <i class="fa-solid fa-chart-bar text-primary"></i> Pass Percentage By Student
+                            </h2>
+                            <div class="relative h-80 w-full">
+                                <canvas id="performanceChart"></canvas>
                             </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.section -->
+                        </div>
+
+                        <!-- Data Table Section -->
+                        <div class="bg-surface border border-white/10 rounded-2xl p-6 shadow-xl animate-slide-up" style="animation-delay: 0.1s;">
+                            <h2 class="text-xl font-bold font-heading mb-4 border-b border-white/10 pb-2">Student Results</h2>
+                            
+                            <div class="overflow-x-auto">
+                                <table id="example" class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">#</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Student Name</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Year</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Section</th>
+                                            <th class="py-3 px-4 font-semibold text-sm uppercase tracking-wider text-gray-400">Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+<?php
+    $cnt = 1;
+    if (count($results) > 0) {
+    foreach ($results as $result) {
+        $pass_percentage = floatval($result->PassPercentage);
+             $colorClass = $pass_percentage >= 40 ? 'text-emerald-400' : 'text-red-400';
+             $iconClass = $pass_percentage >= 40 ? 'fa-circle-check' : 'fa-circle-xmark';
+             $text = $pass_percentage >= 40 ? 'Pass' : 'Fail';
+?>
+                                        <tr class="hover:bg-white/5 transition-colors border-b border-white/5 last:border-0">
+                                            <td class="py-3 px-4"><?php echo htmlentities($cnt);?></td>
+                                            <td class="py-3 px-4 font-medium"><?php echo htmlentities($result->StudentName);?></td>
+                                            <td class="py-3 px-4"><?php echo htmlentities($result->ClassNameNumeric);?></td>
+                                            <td class="py-3 px-4"><?php echo htmlentities($result->Section);?></td>
+                                            <td class="py-3 px-4">
+                                                <div class="flex items-center gap-2 <?php echo $colorClass; ?>">
+                                                    <i class="fa-solid <?php echo $iconClass; ?>"></i>
+                                                    <span class="font-medium"><?php echo $text; ?></span>
+                                                </div>
+                                            </td>
+                                        </tr>
+<?php $cnt++; }} ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
                     </div>
-                    <!-- /.main-page -->
-
-                    
-
-                </div>
-                <!-- /.content-container -->
+                </main>
             </div>
-            <!-- /.content-wrapper -->
-
         </div>
-        <!-- /.main-wrapper -->
 
-        <!-- ========== COMMON JS FILES ========== -->
+        <!-- Scripts -->
         <script src="js/jquery/jquery-2.2.4.min.js"></script>
-        <script src="js/bootstrap/bootstrap.min.js"></script>
-        <script src="js/pace/pace.min.js"></script>
-        <script src="js/lobipanel/lobipanel.min.js"></script>
-        <script src="js/iscroll/iscroll.js"></script>
-
-        <!-- ========== PAGE JS FILES ========== -->
-        <script src="js/prism/prism.js"></script>
-        <script src="js/DataTables/datatables.min.js"></script>
-
-        <!-- ========== THEME JS ========== -->
-        <script src="js/main.js"></script>
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+        
         <script>
-            $(function($) {
-                $('#example').DataTable();
+            $(document).ready(function() {
+                $('#example').DataTable({
+                    "paging": true,
+                    "lengthChange": true,
+                    "searching": true,
+                    "ordering": true,
+                    "info": true,
+                    "autoWidth": false,
+                    "responsive": true,
+                    "language": {
+                        "search": "_INPUT_",
+                        "searchPlaceholder": "Search students...",
+                    }
+                });
 
-                $('#example2').DataTable( {
-                    "scrollY":        "300px",
-                    "scrollCollapse": true,
-                    "paging":         false
-                } );
-
-                $('#example3').DataTable();
+                // Chart.js Configuration
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: <?php echo json_encode($labels); ?>,
+                        datasets: [{
+                            label: 'Pass Percentage',
+                            data: <?php echo json_encode($data_percentage); ?>,
+                            backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                            borderColor: '#6366f1',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            hoverBackgroundColor: 'rgba(99, 102, 241, 0.7)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#9ca3af'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: '#374151'
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#9ca3af'
+                                }
+                            }
+                        }
+                    }
+                });
             });
         </script>
-        <script>
-        am4core.ready(function() {
-            am4core.useTheme(am4themes_animated);
-            var chart = am4core.create("chartdiv", am4charts.XYChart);
-            chart.data = <?php echo json_encode($chartData); ?>;
-            var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-            categoryAxis.dataFields.category = "StudentName";
-            categoryAxis.title.text = "Student Name";
-
-            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-            valueAxis.title.text = "Pass Percentage";
-
-            var series = chart.series.push(new am4charts.ColumnSeries());
-            series.dataFields.valueY = "PassPercentage";
-            series.dataFields.categoryX = "StudentName";
-            series.name = "Pass Percentage";
-            series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}%[/]";
-            series.columns.template.fillOpacity = 0.8;
-
-            var columnTemplate = series.columns.template;
-            columnTemplate.strokeWidth = 2;
-            columnTemplate.strokeOpacity = 1;
-
-            chart.exporting.menu = new am4core.ExportMenu();
-        });
-    </script>
     </body>
 </html>
 <?php } ?>
-
